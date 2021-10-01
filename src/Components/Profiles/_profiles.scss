@@ -1,0 +1,97 @@
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  overflow: hidden;
+  color: $body;
+  height: 300px; //---//
+
+  &__info {
+    margin: auto;
+    text-align: center;
+    color: $body;
+    font-size: 24px;
+    p {
+      margin-bottom: 20px;
+      &:last-child {
+        margin-bottom: 0;
+      }
+      &:first-child {
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+.add-card__plus {
+  font-size: 30px;
+  border: 1px solid $body;
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  margin-top: auto;
+  position: relative;
+
+  &:before,
+  &:after {
+    content: "";
+    position: absolute;
+    background: $body;
+  }
+
+  //vertical
+  &:before {
+    left: 50%;
+    top: $plusSize;
+    bottom: $plusSize;
+    width: 2px;
+    transform: translateX(-50%);
+  }
+
+  //horizontal
+  &:after {
+    top: 50%;
+    left: $plusSize;
+    right: $plusSize;
+    height: 2px;
+    transform: translateY(-50%);
+  }
+}
+.add-card__title {
+  margin-bottom: auto;
+  margin-top: 30px;
+  font-size: 20px;
+}
+.profile-changes {
+  //position: absolute;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+
+  i {
+    margin-left: 6px;
+  }
+  button {
+    cursor: pointer;
+    width: 50%;
+    border-top: 1px solid $line;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
+    transition: all 0.4s;
+    &:first-child {
+      border-right: 1px solid $line;
+    }
+  }
+
+  &__edit:hover {
+    background: $editHover;
+    color: $offWhite;
+  }
+  &__delete:hover {
+    background: $deleteHover;
+    color: $offWhite;
+  }
+}

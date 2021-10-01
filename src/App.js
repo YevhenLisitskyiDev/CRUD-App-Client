@@ -1,24 +1,23 @@
-import logo from './logo.svg';
-import './App.css';
+import Router from "./Routes/index";
+import UserProvider from "./Contexts/UserContext";
+import ProfilesProvider from "./Contexts/ProfilesContext";
+import AuthProvider from "./Contexts/AuthContext";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Providers>
+      <Router />
+    </Providers>
+  );
+}
+
+function Providers({ children }) {
+  return (
+    <AuthProvider>
+      <UserProvider>
+        <ProfilesProvider>{children}</ProfilesProvider>
+      </UserProvider>
+    </AuthProvider>
   );
 }
 
