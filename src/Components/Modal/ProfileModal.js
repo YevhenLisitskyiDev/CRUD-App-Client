@@ -3,6 +3,7 @@ import { useProfiles } from "../../Contexts/ProfilesContext";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../Contexts/AuthContext";
 import { CancelButton, SubmitButton } from "../Buttons";
+import Alert from "../Alert/Alert";
 
 export default function ProfileModal({ profile, onClose }) {
   const { id } = useParams();
@@ -17,26 +18,38 @@ export default function ProfileModal({ profile, onClose }) {
 
   const [newProfile, setNewProfile] = useState(profile || emptyProfile);
   const { updateProfile, createProfile } = useProfiles();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     setNewProfile(profile || emptyProfile);
     // eslint-disable-next-line
   }, [profile]);
 
+  useEffect(() => {
+    setError("");
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    profile
+    setLoading(true);
+    
+    const response = profile
       ? await updateProfile(user._id, profile._id, newProfile)
       : await createProfile(newProfile, id || user._id);
-    setNewProfile(emptyProfile);
-    onClose();
+    if (response.error) setError(response.error);
+    else {
+      setNewProfile(emptyProfile);
+      onClose();
+    }
+    setLoading(false);
   };
 
   const handleChange = (e) => {
     setNewProfile((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const InputGroup = ({ name, type }) => (
+  const InputGroup = (name, type) => (
     <div className="input-group">
       <div className="input-label">{name}:</div>
       <input
@@ -47,6 +60,7 @@ export default function ProfileModal({ profile, onClose }) {
       />
     </div>
   );
+  
   const RadioInput = ({ value }) => (
     <>
       <input
@@ -63,7 +77,8 @@ export default function ProfileModal({ profile, onClose }) {
   return (
     <>
       <form className="profile-modal__form" onSubmit={handleSubmit}>
-        <InputGroup name="name" type="text" />
+        <Alert message={error} />
+        {InputGroup("name", "text")}
         <div className="input-group">
           <div className="input-label">gender:</div>
           <div className="radio-group">
@@ -71,10 +86,10 @@ export default function ProfileModal({ profile, onClose }) {
             <RadioInput value="female" />
           </div>
         </div>
-        <InputGroup name="birthdate" type="date" />
-        <InputGroup name="city" type="text" />
+        {InputGroup("birthdate", "date")}
+        {InputGroup("city", "text")}
         <div className="modal__buttons">
-          <SubmitButton />
+          <SubmitButton disabled={loading} />
           <CancelButton onClick={onClose} />
         </div>
       </form>

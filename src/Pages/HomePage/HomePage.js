@@ -8,8 +8,9 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
   const { profiles, getUserProfiles } = useProfiles();
 
-  const fetchProfiles = async () => {
-    await getUserProfiles(user._id);
+  const fetchProfiles = async () => {    
+    const response = await getUserProfiles(user._id);
+    if(response.error) alert(response.error);
     setLoading(false);
   };
 

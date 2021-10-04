@@ -7,6 +7,7 @@ import { Routes } from "../../Routes/routes";
 export default function Navbar() {
   const { user } = useAuth();
   const { logout } = useAuth();
+  
   const imgBorder = `2px solid ${user.isAdmin ? "#00ba88" : "#d6d8e7"}`;
 
   return (

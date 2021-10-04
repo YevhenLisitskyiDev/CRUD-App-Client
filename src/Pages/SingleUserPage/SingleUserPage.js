@@ -20,15 +20,25 @@ export default function SingleUserPage() {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   const handleDeleteClick = async () => {
-    await deleteUser(id);
-    history.push(Routes.users);
+    return await deleteUser(id);
   };
+  
+  const fetchCallback = async (callback) => {
+    const response = await callback(id);
+    if (response.error) {
+      alert(response.error);
+      history.push(Routes.homePage);
+    }
+    return response.data;
+  };
+
   const initialFetch = async () => {
-    const fetchedUser = await getUser(id);
-    setUser(fetchedUser);
-    await getUserProfiles(id);
+    const fetchedUser = await fetchCallback(getUser);
+    fetchedUser && setUser(fetchedUser);
+    await fetchCallback(getUserProfiles);
     setLoading(false);
   };
+
   useEffect(() => {
     initialFetch();
     return () => setUser(null);
@@ -42,10 +52,14 @@ export default function SingleUserPage() {
       setEditedUser={setUser}
     />
   );
+
   const DeleteModalContent = (
     <ConfirmDeleteModal
       id={id}
-      onClose={() => setIsDeleteOpen(false)}
+      onClose={() => {
+        setIsDeleteOpen(false);
+        history.push(Routes.users);
+      }}
       deleteAction={handleDeleteClick}
     />
   );

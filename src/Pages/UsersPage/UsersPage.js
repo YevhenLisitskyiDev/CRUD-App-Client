@@ -9,8 +9,9 @@ export default function UsersPage() {
   const { getAllUsers } = useUser();
 
   const fetchUsers = async () => {
-    const fetchedUsers = await getAllUsers();
-    setUsers(fetchedUsers);
+    const response = await getAllUsers();
+    if (response.error) alert(response.error);
+    else setUsers(response.data);
     setLoading(false);
   };
 
@@ -18,7 +19,7 @@ export default function UsersPage() {
     fetchUsers();
     // eslint-disable-next-line
   }, []);
-  
+
   return (
     <>
       <h1 className="title">Users:</h1>
@@ -33,7 +34,7 @@ export default function UsersPage() {
   );
 }
 
-const UserCard = ({ user }) => {
+function UserCard({ user }){
   return (
     <Link to={`${Routes.singleUser}/${user._id}`} className="card user-card">
       <div>{user.username}</div>

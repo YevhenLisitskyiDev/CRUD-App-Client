@@ -11,41 +11,57 @@ export default function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
 
-  const baseUrl = "http://localhost:5000";
+  const baseUrl = process.env.BASE_URL || "http://localhost:5000";
+
+  const setToken = (token) => {
+    localStorage.setItem("token", token);
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  };
 
   const getLoggedUser = async () => {
+    setLoading(true);
     const token = localStorage.getItem("token");
     const URL = baseUrl + "/user/auth";
     if (token) {
-      const response = await axios.get(URL);
-      localStorage.setItem("token", response.data.token);
-      setUser(response.data.user);
+      try {
+        const response = await axios.get(URL);
+        setToken(response.data.token);
+        setUser(response.data.user);
+      } catch (error) {
+        setUser(null);
+        localStorage.removeItem("token");
+      }
     }
     setLoading(false);
   };
+
   useEffect(() => {
     getLoggedUser();
+    // eslint-disable-next-line
   }, []);
 
   const signAction = async (URL, userBody) => {
     try {
       const response = await axios.post(URL, userBody);
       const fetchedUser = response.data.user;
-      localStorage.setItem("token", response.data.token);
+      setToken(response.data.token);
       setUser(fetchedUser);
+      return { message: "OK" };
     } catch (error) {
-      throw new Error(error.response.data.message);
+      return { error: error.response.data.message };
     }
   };
 
   const createUser = async (userBody) => {
     const URL = baseUrl + "/user/create";
-    return signAction(URL, userBody);
+    return await signAction(URL, userBody);
   };
+
   const loginUser = async (userBody) => {
     const URL = baseUrl + "/user/login";
-    return signAction(URL, userBody);
+    return await signAction(URL, userBody);
   };
+
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);

@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../../Contexts/AuthContext";
 import signMethods from "./signMethods";
 import { Routes } from "../../Routes/routes";
 import Alert from "../../Components/Alert/Alert";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 export default function SignPage({ method }) {
   const history = useHistory();
@@ -18,24 +18,29 @@ export default function SignPage({ method }) {
 
   const { loginUser, createUser } = useAuth();
 
+  useEffect(() => {
+    return () => setUser(null);
+  }, []);
+
   const handleChange = (e) => {
     setUser((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      setLoading(true);
+    setLoading(true);
+    const response =
       method === signMethods.IN
         ? await loginUser(user)
         : await createUser(user);
-      history.push(Routes.homePage);
-    } catch (error) {
-      setError(error.message);
-    }
+
+    if (response.error) setError(response.error);
+    else history.push(Routes.homePage);
+
     setLoading(false);
   };
-  
-  function InputGroup(name, type) {
+
+  const InputGroup = (name, type) => {
     return (
       <div className="input-group">
         <div className="input-label">{name}</div>
@@ -72,6 +77,14 @@ export default function SignPage({ method }) {
         <button disabled={loading} className="sign-page__form" type="submit">
           Sign {method}
         </button>
+        <Link
+          className="sign-page__form-link"
+          to={method === signMethods.IN ? Routes.signUP : Routes.signIn}
+        >
+          {method === signMethods.IN
+            ? "Don't have an account ?"
+            : "Already have an account ?"}
+        </Link>
       </form>
     </div>
   );

@@ -7,8 +7,9 @@ export default function DashboardPage() {
   const { getStats } = useUser();
 
   const fetchStats = async () => {
-    const fetchedStats = await getStats();
-    setStats(fetchedStats);
+    const response = await getStats();
+    if (response.error) alert(response.error);
+    else setStats(response.data);
     setLoading(false);
   };
 
@@ -20,7 +21,7 @@ export default function DashboardPage() {
   return (
     <>
       <h1 className="title">Dashboard:</h1>
-      {!loading && (
+      {!loading && stats && (
         <div className="stats">
           <DashboardCard title="Users" value={stats.users} />
           <DashboardCard title="Profiles" value={stats.profiles} />
@@ -34,9 +35,11 @@ export default function DashboardPage() {
   );
 }
 
-const DashboardCard = ({ title, value }) => (
-  <div className="card dashboard-card">
-    <div className="title">{title}</div>
-    <div className="dashboard-card__value">{value}</div>
-  </div>
-);
+function DashboardCard({ title, value }) {
+  return (
+    <div className="card dashboard-card">
+      <div className="title">{title}</div>
+      <div className="dashboard-card__value">{value}</div>
+    </div>
+  );
+}

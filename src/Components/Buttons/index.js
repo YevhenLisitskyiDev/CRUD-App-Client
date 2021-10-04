@@ -1,8 +1,8 @@
 import React from "react";
 
-export function SubmitButton() {
+export function SubmitButton({ disabled }) {
   return (
-    <button type="submit">
+    <button disabled={disabled} type="submit">
       <i className="fas fa-check" />
     </button>
   );

@@ -1,17 +1,42 @@
 import React, { useState, useEffect } from "react";
 import { useUser } from "../../Contexts/UserContext";
+import Alert from "../Alert/Alert";
 import { CancelButton, SubmitButton } from "../Buttons";
 
 export default function UserModal({ userToEdit, onClose, setEditedUser }) {
   const { updateUser } = useUser();
 
   const [user, setUser] = useState(userToEdit);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     setUser(userToEdit);
   }, [userToEdit]);
 
-  const convertToBool = (value) => {
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const response = await updateUser(userToEdit._id, user);
+    if (response.error) setError(response.error);
+    else {
+      setEditedUser(user);
+      onClose();
+    }
+    setLoading(false);
+  };
+  
+  const handleChange = (e) => {
+    let value = e.target.value;
+    if (e.target.name === "isAdmin") value = convertToBool(value);
+    setUser((prev) => ({
+      ...prev,
+      [e.target.name]: value,
+    }));
+  };
+
+  function convertToBool(value){
     if (value && typeof value === "string") {
       if (value.toLowerCase() === "true") return true;
       if (value.toLowerCase() === "false") return false;
@@ -19,14 +44,7 @@ export default function UserModal({ userToEdit, onClose, setEditedUser }) {
     return value;
   };
 
-  const handleChange = (e) => {
-    setUser((prev) => ({
-      ...prev,
-      [e.target.name]: convertToBool(e.target.value),
-    }));
-  };
-
-  const InputGroup = ({ name }) => (
+  const InputGroup = (name) => (
     <div className="input-group">
       <div className="input-label">{name}:</div>
       <input
@@ -37,6 +55,7 @@ export default function UserModal({ userToEdit, onClose, setEditedUser }) {
       />
     </div>
   );
+
   const RadioInput = ({ value, name, checked }) => (
     <div>
       <input
@@ -50,19 +69,13 @@ export default function UserModal({ userToEdit, onClose, setEditedUser }) {
     </div>
   );
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await updateUser(userToEdit._id, user);
-    setEditedUser(user);
-    onClose();
-  };
-
   return (
     <>
       {user && (
         <form onSubmit={handleSubmit}>
-          <InputGroup name="username" />
-          <InputGroup name="email" />
+          <Alert message={error} />
+          {InputGroup("username")}
+          {InputGroup("email")}
           <div className="input-group">
             <div className="input-label">role:</div>
             <div className="radio-group">
@@ -71,7 +84,7 @@ export default function UserModal({ userToEdit, onClose, setEditedUser }) {
             </div>
           </div>
           <div className="modal__buttons">
-            <SubmitButton />
+            <SubmitButton disabled={loading} />
             <CancelButton onClick={onClose} />
           </div>
         </form>

@@ -4,9 +4,13 @@ import { useProfiles } from "../../Contexts/ProfilesContext";
 
 export default function ProfilesPage() {
   const { profiles, getAllProfiles } = useProfiles();
-
+  
+  const fetchProfiles = async () => {
+    const response = await getAllProfiles();
+    if (response.error) alert(response.error);
+  };
   useEffect(() => {
-    getAllProfiles();
+    fetchProfiles();
     // eslint-disable-next-line
   }, []);
 

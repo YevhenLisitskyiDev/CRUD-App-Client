@@ -11,11 +11,22 @@ export function useUser() {
 export default function UserProvider({ children }) {
   const { compareUsersAndUpdate, compareUsersAndLogout } = useAuth();
 
-  const baseUrl = "http://localhost:5000";
+  const baseUrl = process.env.BASE_URL || "http://localhost:5000";
+
+  const handleError = async (callback) => {
+    try {
+      const data = await callback();
+      return { data, message: "OK" };
+    } catch (error) {
+      return { error: error.response.data.message };
+    }
+  };
 
   const get = async (URL) => {
-    const response = await axios.get(URL);
-    return response.data;
+    return await handleError(async () => {
+      const response = await axios.get(URL);      
+      return response.data;
+    });
   };
 
   const getStats = async () => {
@@ -34,16 +45,20 @@ export default function UserProvider({ children }) {
   };
 
   const updateUser = async (id, userBody) => {
-    const URL = baseUrl + `/user/update/${id}`;
-    const response = await axios.put(URL, userBody);
-    compareUsersAndUpdate(id, response.data.user);
+    return await handleError(async () => {
+      const URL = baseUrl + `/user/update/${id}`;
+      const response = await axios.put(URL, userBody);
+      compareUsersAndUpdate(id, response.data.user);
+    });
   };
 
   const deleteUser = async (id) => {
-    const URL = baseUrl + "/user/delete/" + id;
-    const response = await axios.delete(URL);
-    compareUsersAndLogout(id);
-    return response;
+    return await handleError(async () => {
+      const URL = baseUrl + "/user/delete/" + id;
+      const response = await axios.delete(URL);
+      compareUsersAndLogout(id);
+      return response;
+    });
   };
 
   const value = {
