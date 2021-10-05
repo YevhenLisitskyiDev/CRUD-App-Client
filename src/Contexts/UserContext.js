@@ -11,7 +11,7 @@ export function useUser() {
 export default function UserProvider({ children }) {
   const { compareUsersAndUpdate, compareUsersAndLogout } = useAuth();
 
-  const baseUrl = process.env.SERVER_BASE_URL || "http://localhost:5000";
+  const baseUrl = process.env.REACT_APP_BASE_URL || "http://localhost:5000";
 
   const handleError = async (callback) => {
     try {

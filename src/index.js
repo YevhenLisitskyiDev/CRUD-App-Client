@@ -3,6 +3,9 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import "./styles/style.css";
 import axios from "axios";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 function setAuthToken() {
   const token = localStorage.getItem("token");

@@ -11,7 +11,7 @@ export default function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
 
-  const baseUrl = process.env.SERVER_BASE_URL || "http://localhost:5000";
+  const baseUrl = process.env.REACT_APP_BASE_URL || "http://localhost:5000";
 
   const setToken = (token) => {
     localStorage.setItem("token", token);
