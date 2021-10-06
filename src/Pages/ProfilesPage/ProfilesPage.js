@@ -9,6 +9,7 @@ export default function ProfilesPage() {
     const response = await getAllProfiles();
     if (response.error) alert(response.error);
   };
+  
   useEffect(() => {
     fetchProfiles();
     // eslint-disable-next-line

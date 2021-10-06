@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import axios from "axios";
 
-const AuthContext = React.createContext();
+export const AuthContext = React.createContext();
 
 export function useAuth() {
   return useContext(AuthContext);
@@ -81,6 +81,7 @@ export default function AuthProvider({ children }) {
     logout,
     compareUsersAndUpdate,
     compareUsersAndLogout,
+    setUser
   };
 
   return (
