@@ -1,4 +1,4 @@
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, waitFor } from "@testing-library/react";
 import ConfirmDeleteModal from "../Components/Modal/ConfirmDeleteModal";
 import AuthProvider from "../Contexts/AuthContext";
 
@@ -13,9 +13,7 @@ describe("Confirm Delete Modal", () => {
       </AuthProvider>
     );
 
-    fireEvent.click(screen.getByText("Delete"));
-    setTimeout(() => {
-      expect(onClose).toHaveBeenCalled();
-    }, 0);
+    await waitFor(() => fireEvent.click(screen.getByText("Delete")));
+    expect(onClose).toHaveBeenCalled();
   });
 });
