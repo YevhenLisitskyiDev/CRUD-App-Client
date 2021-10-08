@@ -22,7 +22,7 @@ export default function SingleUserPage() {
   const handleDeleteClick = async () => {
     return await deleteUser(id);
   };
-  
+
   const fetchCallback = async (callback) => {
     const response = await callback(id);
     if (response.error) {
@@ -83,8 +83,13 @@ export default function SingleUserPage() {
             <p className="user__email">{user.email}</p>
             <p className="user__role">{user.isAdmin ? "admin" : "user"}</p>
             <div className="user__buttons">
-              <i className="fas fa-pen" onClick={() => setIsOpen(true)} />
               <i
+                title="edit"
+                className="fas fa-pen"
+                onClick={() => setIsOpen(true)}
+              />
+              <i
+                title="delete"
                 className="far fa-trash-alt"
                 onClick={() => setIsDeleteOpen(true)}
               />

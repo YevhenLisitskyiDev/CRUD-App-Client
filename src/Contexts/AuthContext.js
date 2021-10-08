@@ -68,10 +68,10 @@ export default function AuthProvider({ children }) {
   };
 
   const compareUsersAndUpdate = (id, anotherUser) => {
-    user._id === id && setUser(anotherUser);
+    user && user._id === id && setUser(anotherUser);
   };
   const compareUsersAndLogout = (id) => {
-    user._id === id && logout();
+    user && user._id === id && logout();
   };
 
   const value = {
@@ -81,7 +81,7 @@ export default function AuthProvider({ children }) {
     logout,
     compareUsersAndUpdate,
     compareUsersAndLogout,
-    setUser
+    setUser,
   };
 
   return (

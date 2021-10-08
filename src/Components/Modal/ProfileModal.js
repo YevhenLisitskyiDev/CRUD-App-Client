@@ -33,10 +33,10 @@ export default function ProfileModal({ profile, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
+
     const response = profile
-      ? await updateProfile(user._id, profile._id, newProfile)
-      : await createProfile(newProfile, id || user._id);
+      ? await updateProfile(user?._id, profile._id, newProfile)
+      : await createProfile(newProfile, id || user?._id);
     if (response.error) setError(response.error);
     else {
       setNewProfile(emptyProfile);
@@ -53,6 +53,7 @@ export default function ProfileModal({ profile, onClose }) {
     <div className="input-group">
       <div className="input-label">{name}:</div>
       <input
+        placeholder={name}
         name={name}
         type={type}
         value={newProfile?.[name]}
@@ -60,7 +61,7 @@ export default function ProfileModal({ profile, onClose }) {
       />
     </div>
   );
-  
+
   const RadioInput = ({ value }) => (
     <>
       <input

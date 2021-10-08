@@ -5,7 +5,7 @@ export default function ConfirmDeleteModal({ id, onClose, deleteAction }) {
   const { user } = useAuth();
 
   const handleDeleteClick = async () => {
-    const response = await deleteAction(user._id, id);
+    const response = await deleteAction(user?._id, id);
     if (response.error) alert(response.error);
     onClose();
   };
